@@ -1,0 +1,317 @@
+{
+	"info": {
+		"_postman_id": "tree-detection-api-v1",
+		"name": "Tree Detection API",
+		"description": "API for detecting trees in aerial images using YOLO models",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5003",
+			"type": "string"
+		},
+		{
+			"key": "job_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/health",
+					"host": ["{{base_url}}"],
+					"path": ["health"]
+				},
+				"description": "Check if the API is running"
+			},
+			"response": []
+		},
+		{
+			"name": "List Available Models",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/models",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "models"]
+				},
+				"description": "Get list of available summer and winter models"
+			},
+			"response": []
+		},
+		{
+			"name": "Predict - ZIP with JPEG+JGW (Return GeoJSON)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.job_id) {",
+							"        pm.collectionVariables.set(\"job_id\", jsonData.job_id);",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/path/to/your/images.zip",
+							"description": "ZIP file with JPEG images and JGW files"
+						},
+						{
+							"key": "model",
+							"value": "summer",
+							"type": "text",
+							"description": "Model type: 'summer' or 'winter'"
+						},
+						{
+							"key": "confidence",
+							"value": "0.2",
+							"type": "text",
+							"description": "Confidence threshold (0.0 - 1.0)"
+						},
+						{
+							"key": "return_geojson",
+							"value": "true",
+							"type": "text",
+							"description": "Return GeoJSON inline in response (only if < 5MB, otherwise returns URL)"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/predict",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "predict"]
+				},
+				"description": "Upload ZIP file with JPEG+JGW files. Response includes download URLs and optionally inline GeoJSON (if < 5MB). For large files, use the /geojson or /download endpoints."
+			},
+			"response": []
+		},
+		{
+			"name": "Predict - ZIP (Return URLs Only)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.job_id) {",
+							"        pm.collectionVariables.set(\"job_id\", jsonData.job_id);",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/path/to/your/images.zip"
+						},
+						{
+							"key": "model",
+							"value": "summer",
+							"type": "text"
+						},
+						{
+							"key": "confidence",
+							"value": "0.25",
+							"type": "text"
+						},
+						{
+							"key": "return_geojson",
+							"value": "false",
+							"type": "text",
+							"description": "Only return download URLs"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/predict",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "predict"]
+				},
+				"description": "Upload ZIP and get download URLs instead of inline GeoJSON"
+			},
+			"response": []
+		},
+		{
+			"name": "Predict - TIFF File",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.job_id) {",
+							"        pm.collectionVariables.set(\"job_id\", jsonData.job_id);",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/path/to/your/image.tif",
+							"description": "TIFF file with geospatial data"
+						},
+						{
+							"key": "model",
+							"value": "winter",
+							"type": "text"
+						},
+						{
+							"key": "confidence",
+							"value": "0.3",
+							"type": "text"
+						},
+						{
+							"key": "return_geojson",
+							"value": "true",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/predict",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "predict"]
+				},
+				"description": "Upload TIFF file (requires GDAL). Server will split into tiles and process."
+			},
+			"response": []
+		},
+		{
+			"name": "Predict - With Specific Model",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/path/to/your/images.zip"
+						},
+						{
+							"key": "model",
+							"value": "summer",
+							"type": "text"
+						},
+						{
+							"key": "model_name",
+							"value": "best.pt",
+							"type": "text",
+							"description": "Specific model filename from models/summer/ or models/winter/"
+						},
+						{
+							"key": "confidence",
+							"value": "0.2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/predict",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "predict"]
+				},
+				"description": "Use a specific model file instead of the default"
+			},
+			"response": []
+		},
+		{
+			"name": "Check Job Status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/status/{{job_id}}",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "status", "{{job_id}}"]
+				},
+				"description": "Check if a job is completed. Use job_id from prediction response."
+			},
+			"response": []
+		},
+		{
+			"name": "Get GeoJSON (as JSON response)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/geojson/{{job_id}}",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "geojson", "{{job_id}}"]
+				},
+				"description": "Get the GeoJSON as a JSON response (not as file download). Useful for API consumers who want to process the GeoJSON directly."
+			},
+			"response": []
+		},
+		{
+			"name": "Download GeoJSON File",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/download/{{job_id}}/output.geojson",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "download", "{{job_id}}", "output.geojson"]
+				},
+				"description": "Download the GeoJSON output as a file attachment"
+			},
+			"response": []
+		},
+		{
+			"name": "Download Processed Images ZIP",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/download/{{job_id}}/processed_images.zip",
+					"host": ["{{base_url}}"],
+					"path": ["api", "v1", "download", "{{job_id}}", "processed_images.zip"]
+				},
+				"description": "Download ZIP file with annotated images"
+			},
+			"response": []
+		}
+	]
+}

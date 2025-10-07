@@ -1,0 +1,83 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# Conda
+.conda/
+
+# Flask
+instance/
+.webassets-cache
+*.log
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Project specific
+uploads/*
+!uploads/.gitkeep
+temp/*
+!temp/.gitkeep
+outputs/*
+!outputs/.gitkeep
+
+# Test files in root
+*.zip
+*.tif
+*.tiff
+*.geojson
+salam.zip
+
+# Models (keep directory structure but not the actual model files)
+# Uncomment if you don't want to track models
+# models/**/*.pt
+# !models/summer/.gitkeep
+# !models/winter/.gitkeep
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+

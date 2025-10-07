@@ -1,0 +1,46 @@
+name: tree-detection-api
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  # Python
+  - python=3.11
+  
+  # Geospatial (GDAL and related) - let conda resolve versions
+  - gdal>=3.6
+  - rasterio>=1.3
+  - fiona>=1.9
+  - pyproj>=3.4
+  - shapely>=2.0
+  - geopandas>=0.13
+  
+  # Scientific Computing
+  - numpy>=1.24
+  - scipy
+  - pandas
+  
+  # Image Processing
+  - pillow>=10.0
+  - opencv>=4.8
+  
+  # ML & Computer Vision - use pytorch channel
+  - pytorch::pytorch
+  - pytorch::torchvision
+  - pytorch::cpuonly
+  
+  # Utilities
+  - pyyaml
+  - requests
+  - python-dateutil
+  
+  # pip dependencies
+  - pip
+  - pip:
+    - Flask==3.0.0
+    - flask-cors==4.0.0
+    - Werkzeug==3.0.1
+    - ultralytics==8.2.72
+    - pygeoops==0.4.0
+    - gunicorn==21.2.0
+
+
